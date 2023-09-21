@@ -63,3 +63,9 @@
   background-color: var(--secondary-accent);
   color: var(--secondary-color);
 }
+
+.orderModalWarnings {
+  width: 100%;
+  padding-left: 4rem;
+  margin-bottom: 1.5rem;
+}
