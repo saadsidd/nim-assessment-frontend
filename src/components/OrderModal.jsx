@@ -7,7 +7,12 @@ function OrderModal({ order, setOrderModal }) {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
 
+  const [nameWarning, setNameWarning] = useState(false);
+  const [phoneWarning, setPhoneWarning] = useState(false);
+  const [addressWarning, setAddressWarning] = useState(false);
+
   const navigate = useNavigate();
+
 
   const placeOrder = async () => {
     const response = await fetch("/api/orders", {
@@ -28,6 +33,24 @@ function OrderModal({ order, setOrderModal }) {
       navigate(`/order-confirmation/${data.id}`);
     }
   };
+
+  const validateOrder = () => {
+    const invalidName = name.length === 0;
+    const invalidPhone =
+      phone.length === 0 || /^[()\d-]+$/.test(phone) === false;
+    const invalidAddress = address.length === 0;
+
+    setNameWarning(invalidName);
+    setPhoneWarning(invalidPhone);
+    setAddressWarning(invalidAddress);
+
+    if (invalidName || invalidPhone || invalidAddress) {
+      return;
+    }
+
+    placeOrder();
+  };
+
   return (
     <>
       <div
@@ -86,6 +109,14 @@ function OrderModal({ order, setOrderModal }) {
           </div>
         </form>
 
+        <div className={styles.orderModalWarnings}>
+          <ul>
+            {nameWarning && <li>Please enter a name</li>}
+            {phoneWarning && <li>Please enter a valid phone number</li>}
+            {addressWarning && <li>Please enter an address</li>}
+          </ul>
+        </div>
+
         <div className={styles.orderModalButtons}>
           <button
             className={styles.orderModalClose}
@@ -95,7 +126,7 @@ function OrderModal({ order, setOrderModal }) {
           </button>
           <button
             onClick={() => {
-              placeOrder();
+              validateOrder();
             }}
             className={styles.orderModalPlaceOrder}
           >
